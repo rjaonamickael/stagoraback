@@ -16,6 +16,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class Etablissement implements Serializable {
 	
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
