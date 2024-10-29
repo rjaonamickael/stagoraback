@@ -48,7 +48,7 @@ public class ServicesAdmin {
 	
 	// Suppression d'établissement
 	@RequestMapping(value="/admin/etablissements/{id}",method=RequestMethod.DELETE)
-	public boolean delContact(@PathVariable Long id){
+	public boolean deleteEtablissement(@PathVariable Long id){
 		daoEtablissement.deleteById(id);
 		return true; 			// valeur envoyé comme réponse à la requête
 
@@ -56,7 +56,7 @@ public class ServicesAdmin {
 	
 	// Modification d'un établissement
 	@RequestMapping(value="/admin/etablissements/{id}",method=RequestMethod.PUT)
-	public Etablissement updateContact(@PathVariable Long id,@RequestBody Etablissement e){
+	public Etablissement updateEtablissement(@PathVariable Long id,@RequestBody Etablissement e){
 		e.setId(id);
 		
 		return daoEtablissement.save(e);
