@@ -74,6 +74,7 @@ public class Etablissement implements Serializable {
 		this.lienLogo = lienLogo;
 	}
 
+	// constructor
 	public Etablissement() {
 		super();
 	}
