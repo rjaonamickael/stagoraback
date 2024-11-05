@@ -21,6 +21,7 @@ public class Site implements Serializable{
 	private String province;
 	
 	
+	
 	@ManyToOne
     @JoinColumn(name = "id_employeur", referencedColumnName = "id")
     private Employeur employeur;

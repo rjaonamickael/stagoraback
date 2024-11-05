@@ -16,7 +16,6 @@ import jakarta.persistence.OneToOne;
 
 
 
-
 @Entity
 public class Employeur implements Serializable{
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -32,6 +32,7 @@ public class ControllerUser {
 	private ServiceUser serviceUser;	
 	
 	
+	
 	// Inscription étudiant
 	@RequestMapping(value="/user/inscription/etudiant",method=RequestMethod.POST)
 	public String addEtudiant(@RequestBody RequestInscriptionEtudiant req){

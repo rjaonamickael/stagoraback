@@ -7,3 +7,4 @@ import com.stagora.entities.employers.Employeur;
 public interface DaoEmployeur extends JpaRepository<Employeur, Long>{
 
 }
+

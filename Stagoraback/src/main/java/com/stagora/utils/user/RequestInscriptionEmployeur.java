@@ -10,7 +10,6 @@ import com.stagora.entities.users.User;
 public class RequestInscriptionEmployeur {
 	private User user;
 	private Employeur employeur;
-//	private List<Site> sites;
 	
 	
 	public User getUser() {

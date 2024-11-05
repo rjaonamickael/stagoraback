@@ -33,7 +33,6 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Employeur employeur;
 
-	
     
     public Long getId() {
 		return id;
