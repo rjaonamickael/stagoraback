@@ -1,5 +1,5 @@
 package com.stagora.entities.employers;
 
-public class EntityEmployer {
+public class Employer {
 
 }
