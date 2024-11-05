@@ -7,13 +7,17 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.stagora.dao.students.DaoEtablissement;
 import com.stagora.entities.students.Etablissement;
+import com.stagora.utils.ImageStorageService;
 
 @RestController
 @CrossOrigin("*") // Pour régler ce problème Access-Control-Allow-Origin
@@ -21,6 +25,9 @@ public class ServicesAdmin {
 	
 	@Autowired
 	private DaoEtablissement daoEtablissement;
+	
+//	@Autowired
+//    private ImageStorageService imageStorageService;
 	
 	
 	
@@ -60,5 +67,11 @@ public class ServicesAdmin {
 		e.setId(id);
 		
 		return daoEtablissement.save(e);
+	}
+	
+	@PostMapping(value = "/uploadImage", consumes = "multipart/form-data")
+	public String uploadImage(@RequestParam("file") MultipartFile file) {
+	    // Logique pour enregistrer le fichier
+	    return "Fichier enregistré avec succès";
 	}
 }
