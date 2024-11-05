@@ -108,7 +108,6 @@ public class Etablissement implements Serializable {
 	}
 
 
-
 	public Etablissement() {
 		super();
 	}
