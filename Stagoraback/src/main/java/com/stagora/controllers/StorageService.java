@@ -1,4 +1,4 @@
-package com.stagora.services;
+package com.stagora.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;

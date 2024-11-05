@@ -1,6 +1,6 @@
 package com.stagora.entities.users;
 
-import com.stagora.entities.employers.Employer;
+import com.stagora.entities.employers.Employeur;
 import com.stagora.entities.students.Etudiant;
 
 import jakarta.persistence.CascadeType;
@@ -23,13 +23,15 @@ public class User {
 	
 	private String mot_de_passe;
 	
+	private boolean estConfirme=false;
+	
 	
     // Relation OneToOne avec Etudiant et Employeur
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Etudiant etudiant;
 
-//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-//    private Employer employeur;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Employeur employeur;
 
 	
     
@@ -80,25 +82,37 @@ public class User {
 	public void setEtudiant(Etudiant etudiant) {
 		this.etudiant = etudiant;
 	}
+	
+	
+	public Employeur getEmployeur() {
+		return employeur;
+	}
 
-//	public Employer getEmployeur() {
-//		return employeur;
-//	}
-//
-//	public void setEmployeur(Employer employeur) {
-//		this.employeur = employeur;
-//	}
+	public void setEmployeur(Employeur employeur) {
+		this.employeur = employeur;
+	}
 
-	public User(Long id, String email, String phone, String sel, String mot_de_passe, Etudiant etudiant,
-			Employer employeur) {
+	public boolean isEstConfirme() {
+		return estConfirme;
+	}
+
+	public void setEstConfirme(boolean estConfirme) {
+		this.estConfirme = estConfirme;
+	}
+
+
+
+	public User(Long id, String email, String phone, String sel, String mot_de_passe, boolean estConfirme,
+			Etudiant etudiant, Employeur employeur) {
 		super();
 		this.id = id;
 		this.email = email;
 		this.phone = phone;
 		this.sel = sel;
 		this.mot_de_passe = mot_de_passe;
+		this.estConfirme = estConfirme;
 		this.etudiant = etudiant;
-//		this.employeur = employeur;
+		this.employeur = employeur;
 	}
 
 	public User() {
