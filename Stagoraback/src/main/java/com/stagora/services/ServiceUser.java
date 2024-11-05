@@ -22,7 +22,6 @@ public class ServiceUser {
 	@Autowired
 	private DaoUser daoUser;
 	
-	
 	@Autowired
 	private DaoEtudiant daoEtudiant;
 	
