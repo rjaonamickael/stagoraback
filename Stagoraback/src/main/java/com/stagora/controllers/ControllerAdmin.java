@@ -1,4 +1,4 @@
-package com.stagora.services;
+package com.stagora.controllers;
 
 
 import java.util.List;
@@ -21,14 +21,13 @@ import com.stagora.utils.ImageStorageService;
 
 @RestController
 @CrossOrigin("*") // Pour régler ce problème Access-Control-Allow-Origin
-public class ServicesAdmin {
+public class ControllerAdmin {
 	
 	@Autowired
 	private DaoEtablissement daoEtablissement;
 	
 //	@Autowired
 //    private ImageStorageService imageStorageService;
-	
 	
 	
 	// REQUÊTE POUR TOUT CE QUI CONCERNE LES ETABLISSEMENT
