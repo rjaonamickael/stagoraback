@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 
 @Entity
@@ -23,7 +24,7 @@ public class Etudiant {
     @JoinColumn(name = "id_user", referencedColumnName = "id")
     private User user;
 	
-	@OneToOne
+	@ManyToOne
     @JoinColumn(name = "id_etablissement", referencedColumnName = "id")
     private Etablissement etablissement;
 
