@@ -1,10 +1,6 @@
 package com.stagora.utils.user;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.stagora.entities.employers.Employeur;
-import com.stagora.entities.employers.Site;
 import com.stagora.entities.users.User;
 
 public class RequestInscriptionEmployeur {
