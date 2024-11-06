@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.stagora.dao.students.DaoEtablissement;
 import com.stagora.entities.students.Etablissement;
-import com.stagora.utils.ImageStorageService;
 
 @RestController
 @CrossOrigin("*") // Pour régler ce problème Access-Control-Allow-Origin

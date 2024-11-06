@@ -31,10 +31,7 @@ public class Employeur implements Serializable{
 	@OneToOne
     @JoinColumn(name = "id_user", referencedColumnName = "id")
     private User user;
-	
-	
-	
-	
+
 	
 	public Long getId() {
 		return id;
