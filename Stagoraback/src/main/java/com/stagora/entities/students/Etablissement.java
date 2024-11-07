@@ -27,7 +27,7 @@ public class Etablissement implements Serializable {
 	
 	
 	// Relation OneToMany avec Etudiant
-	@OneToMany(mappedBy = "etablissement", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+	@OneToMany(mappedBy = "etablissement", cascade = CascadeType.ALL)
     private List<Etudiant> etudiants;
 
 

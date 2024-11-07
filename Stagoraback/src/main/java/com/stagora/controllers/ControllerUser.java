@@ -1,5 +1,7 @@
 package com.stagora.controllers;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -9,9 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import com.stagora.services.ServiceUser;
 import com.stagora.utils.user.RequestInscriptionEmployeur;
 import com.stagora.utils.user.RequestInscriptionEtudiant;
+
+import jakarta.transaction.Transactional;
 
 @RestController
 @CrossOrigin("*") 
@@ -24,7 +29,8 @@ public class ControllerUser {
 	
 	// Inscription étudiant
 	@PostMapping(value="/inscription/etudiant")
-	public ResponseEntity<String> addEtudiant(@RequestBody RequestInscriptionEtudiant req){
+	@Transactional
+	public ResponseEntity<Map<String, String>> addEtudiant(@RequestBody RequestInscriptionEtudiant req){
 		
 		return serviceUser.inscriptionEtudiant(req);
 	}
@@ -32,14 +38,15 @@ public class ControllerUser {
 	
 	//Inscription Employeur
 	@PostMapping("/inscription/employeur")
-	public ResponseEntity<String> addEmployeur(@RequestBody RequestInscriptionEmployeur req){
+	@Transactional
+	public ResponseEntity<Map<String, String>> addEmployeur(@RequestBody RequestInscriptionEmployeur req){
 		
 		return serviceUser.inscriptionEmployeur(req);
 	}
 	
 	
 	@PostMapping("/connexion")
-	public ResponseEntity<String> connect(@RequestParam String email, @RequestParam String mdp){
+	public ResponseEntity<Map<String, String>> connect(@RequestParam String email, @RequestParam String mdp){
 		
 		return serviceUser.connection(email, mdp);
 	}
