@@ -63,19 +63,18 @@ public class ServiceEmployeur {
 	public Stage unStage(Long id_employeur, Long id){
 		/*
 		// Recherche de l'employeur
-				Employeur employeur = daoEmployeur.findById(id_employeur)
-													.orElseThrow( () ->  
-													new NoSuchElementException("Employeur non trouvé"));
-
-		// Get All stage de l'employeur
-		List<Stage> stages = employeur.getStages();	
+		Employeur employeur = daoEmployeur.findById(id_employeur)
+											.orElseThrow( () ->  
+											new NoSuchElementException("Employeur non trouvé"));
+		
+		Stage stage = employeur.getStages().stream()
+											.filter(s -> s.getId() == id)
+											.findFirst()
+											.orElseThrow( () ->  
+													new NoSuchElementException("Stage non trouvé"));
+		*/
 		
 		// get Stage s'il existe sinon renvoie une exception
-		Stage stage = stages.stream()
-                .filter(s -> s.getId() == id)
-                .findFirst()  // Renvoie un Optional<Stage>
-                .orElseThrow(() -> new NoSuchElementException("Stage non trouvé"));
-		*/
 		Stage stage = daoStage.findById(id).orElseThrow(
 											() -> new NoSuchElementException("Stage non trouvé"));
 		
@@ -84,23 +83,12 @@ public class ServiceEmployeur {
 
 
 	public ResponseEntity<Map<String, String>> suppressionStage(Long id_employeur, Long id){
-		// Recherche de l'employeur
-		Employeur employeur = daoEmployeur.findById(id_employeur)
-											.orElseThrow( () ->  
-											new NoSuchElementException("Employeur non trouvé"));
-
-		// Get All stage de l'employeur
-		List<Stage> stages = employeur.getStages();	
-		
 		// get Stage s'il existe sinon renvoie une exception
-		Stage stage = stages.stream()
-		        .filter(s -> s.getId() == id)
-		        .findFirst()  // Renvoie un Optional<Stage>
-		        .orElseThrow(() -> new NoSuchElementException("Stage non trouvé"));
+		Stage stage = daoStage.findById(id).orElseThrow(
+				() -> new NoSuchElementException("Stage non trouvé"));
 		
-		System.out.println("Stage avant suppression: " + stage.getId());
-		daoStage.delete(stage);
-		System.out.println("Stage après suppression");
+		// Suppression du stage
+		daoStage.deleteById(stage.getId());
 		
 		return ResponseEntity.status(HttpStatus.OK).body(functions.reponse(typeResponse,"Success"));
 	}
@@ -109,8 +97,8 @@ public class ServiceEmployeur {
 	public Stage misajourStage(Long id , Stage stageModif){
 		// get Stage s'il existe sinon renvoie une exception
 		Stage stage = daoStage.findById(id).orElseThrow(
-				() -> new NoSuchElementException("Stage non trouvé"));
-		
+											() -> new NoSuchElementException("Stage non trouvé"));
+		// Apport des modification
 		stageModif.setId(id);
 		stageModif.setEmployeur(stage.getEmployeur());
 		

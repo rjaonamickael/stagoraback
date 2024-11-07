@@ -65,9 +65,8 @@ public class ControllerEmployeur {
 	
 	
 	@PutMapping(value="/stages/{id}")
-	//@Transactional
-	public Stage updateStage(	@PathVariable Long id, 
-															@RequestBody Stage stage) {
+	@Transactional
+	public Stage updateStage(@PathVariable Long id, @RequestBody Stage stage) {
 		
 		return serviceEmployeur.misajourStage(id,stage);
 	}
