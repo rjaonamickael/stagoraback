@@ -2,6 +2,8 @@ package com.stagora.entities.employers;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,6 +26,7 @@ public class Site implements Serializable{
 	
 	@ManyToOne
     @JoinColumn(name = "id_employeur", referencedColumnName = "id")
+	@JsonBackReference			// Pour éviter les boucles infini JSON à cause des relations ManyToOne
     private Employeur employeur;
 
 
