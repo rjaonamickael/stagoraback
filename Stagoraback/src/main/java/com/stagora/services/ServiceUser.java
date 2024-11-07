@@ -3,6 +3,8 @@ package com.stagora.services;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +47,7 @@ public class ServiceUser {
 	private DaoConnexion daoConnexion;
 	
 	// ResponseEntity pour les type de réponses  à envoyer (HTTP)
- 	public ResponseEntity<String> inscriptionEtudiant(RequestInscriptionEtudiant req){
+ 	public ResponseEntity<Map<String, String>> inscriptionEtudiant(RequestInscriptionEtudiant req){
 		//Vérification de la disponibilité de l'émail
 		User user = req.getUser();
 		this.verifDisponibiliteEmail(user);
@@ -62,12 +64,12 @@ public class ServiceUser {
 		// Association du compte à l'utilisateur et enregistrer le compte
 		etudiant.setUser(user);
 		etudiant.setEtablissement(etablissement.get());
-		daoEtudiant.save(etudiant);
+		daoEtudiant.save(etudiant);		
 		
-		return ResponseEntity.status(HttpStatus.CREATED).body("Success");
+		return ResponseEntity.status(HttpStatus.CREATED).body(this.reponse("Success"));
 	}
 	
-	public ResponseEntity<String> inscriptionEmployeur(RequestInscriptionEmployeur req){
+	public ResponseEntity<Map<String, String>> inscriptionEmployeur(RequestInscriptionEmployeur req){
 		//Vérification de la disponibilité de l'émail
 		User user = req.getUser();
 		this.verifDisponibiliteEmail(user);
@@ -88,21 +90,23 @@ public class ServiceUser {
 		// Enregistrement de l'employeur
 		daoEmployeur.save(employeur);
 		
-		return ResponseEntity.status(HttpStatus.CREATED).body("Success");
+		return ResponseEntity.status(HttpStatus.CREATED).body(this.reponse("Success"));
 		
 	}
 
-	public ResponseEntity<String> connection(String email,String mdp) {
+	public ResponseEntity<Map<String, String>> connection(String email,String mdp) {
 		User user = daoUser.findUserByEmail(email);
 		
 		// Vérification de l'existence de l'utilisateur
 		if (user == null) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utilisateur non trouvé");
+			// 404 NOT_FOUND : Ressource demandée introuvable.
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.reponse("Utilisateur non trouvé"));
 	    }
 		
 		// Vérification de l'activation de l'émail
 	    if (!user.isConfirme()) {
-	        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Email non confirmé");
+	    	// FORBIDDEN 403 Accès refusé, même avec authentification valide.
+	        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(this.reponse("Email non confirmé"));      
 	    }
 	    
 	    
@@ -129,15 +133,13 @@ public class ServiceUser {
 	    	// Enregistrement 
 	    	daoConnexion.save(connexion);
 
-	    	return ResponseEntity.status(HttpStatus.OK).body("Connection succes");
+	    	return ResponseEntity.status(HttpStatus.OK).body(this.reponse("Connection succes"));
 	    }
 	    else {
-	    	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Mauvais mot de passe");
+	    	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(this.reponse("Mauvais mot de passe"));
 	    }
 	    
 	}
-
-	
 
 	
 	private void verifDisponibiliteEmail(User user) {
@@ -155,4 +157,12 @@ public class ServiceUser {
 			return false;
 		}
 	}
+
+	private Map<String, String> reponse(String message){
+		Map<String, String> reponse = new HashMap<>();
+		reponse.put("message", message);
+        
+        return reponse;
+	}
+
 }
