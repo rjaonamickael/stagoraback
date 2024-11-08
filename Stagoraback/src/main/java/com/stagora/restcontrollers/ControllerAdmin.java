@@ -1,13 +1,17 @@
-package com.stagora.controllers;
+package com.stagora.restcontrollers;
 
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,16 +19,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.stagora.dao.students.DaoEtablissement;
 import com.stagora.entities.students.Etablissement;
-import com.stagora.utils.ImageStorageService;
+import com.stagora.services.ServiceAdmin;
 
 @RestController
 @CrossOrigin("*") // Pour régler ce problème Access-Control-Allow-Origin
+@RequestMapping("/admin")
 public class ControllerAdmin {
 	
 	@Autowired
-	private DaoEtablissement daoEtablissement;
+	private ServiceAdmin serviceAdmin;
 	
 //	@Autowired
 //    private ImageStorageService imageStorageService;
@@ -32,40 +36,40 @@ public class ControllerAdmin {
 	
 	// REQUÊTE POUR TOUT CE QUI CONCERNE LES ETABLISSEMENT
 	// Tous les établissement
-	@RequestMapping(value="/admin/etablissements",method=RequestMethod.GET)
+	@GetMapping("/etablissements")
 	public List<Etablissement> getAllEtablissement(){
-		return daoEtablissement.findAll();
+		
+		return serviceAdmin.toutEtablissement();
 	}
 	
 	// Un établissement
-	@RequestMapping(value="/admin/etablissements/{id}",method=RequestMethod.GET)
-	public Optional<Etablissement> getContact(@PathVariable Long id){
-		return daoEtablissement.findById(id);
+	@GetMapping("/etablissements/{id}")
+	public Etablissement getEtablissement(@PathVariable Long id){
 		
-		//Version de spring antérieur, findById.
-		// Optional<Contact> , car il se pourrait que id n'existe pas
+		return serviceAdmin.unEtablissement(id);
 	}
 	
 	// Ajout d'un Etablissement
-	@RequestMapping(value="/admin/etablissements",method=RequestMethod.POST)
-	public Etablissement addEtablissement(@RequestBody Etablissement e){
-		return daoEtablissement.save(e);
+	@PostMapping("/etablissements")
+	public ResponseEntity<Map<String, String>> addEtablissement(@RequestBody Etablissement e){
+		
+		return serviceAdmin.ajoutEtablissement(e);
 	}
 	
 	// Suppression d'établissement
-	@RequestMapping(value="/admin/etablissements/{id}",method=RequestMethod.DELETE)
-	public boolean deleteEtablissement(@PathVariable Long id){
-		daoEtablissement.deleteById(id);
-		return true; 			// valeur envoyé comme réponse à la requête
+	@DeleteMapping("/etablissements/{id}")
+	public ResponseEntity<Map<String, String>> deleteEtablissement(@PathVariable Long id){
+		
+		return serviceAdmin.suppressionEtablissement(id);
 
 	}
 	
 	// Modification d'un établissement
-	@RequestMapping(value="/admin/etablissements/{id}",method=RequestMethod.PUT)
-	public Etablissement updateEtablissement(@PathVariable Long id,@RequestBody Etablissement e){
-		e.setId(id);
+	@PutMapping("/etablissements/{id}")
+	public ResponseEntity<Map<String, String>> updateEtablissement(	@PathVariable Long id,
+																	@RequestBody Etablissement e){
 		
-		return daoEtablissement.save(e);
+		return serviceAdmin.misajourEtablissement(id, e);
 	}
 	
 	@PostMapping(value = "/uploadImage", consumes = "multipart/form-data")

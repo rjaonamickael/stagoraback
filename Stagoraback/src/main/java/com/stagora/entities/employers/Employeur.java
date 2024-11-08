@@ -3,6 +3,7 @@ package com.stagora.entities.employers;
 import java.io.Serializable;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.stagora.entities.users.User;
 
 import jakarta.persistence.CascadeType;
@@ -26,15 +27,17 @@ public class Employeur implements Serializable{
 	private String code;
 	
 	@OneToMany(mappedBy = "employeur", cascade = CascadeType.ALL)
+	@JsonManagedReference	// Pour éviter les boucles infini JSON à cause des relations oneToMany
 	private List<Site> sites;
+	
+	@OneToMany(mappedBy = "employeur", cascade = CascadeType.ALL)
+	@JsonManagedReference	// Pour éviter les boucles infini JSON à cause des relations oneToMany
+	private List<Stage> stages;
 	
 	@OneToOne
     @JoinColumn(name = "id_user", referencedColumnName = "id")
     private User user;
-	
-	
-	
-	
+
 	
 	public Long getId() {
 		return id;
@@ -80,12 +83,23 @@ public class Employeur implements Serializable{
 	}
 
 
-	public Employeur(Long id, String nom, String code, List<Site> sites, User user) {
+	public List<Stage> getStages() {
+		return stages;
+	}
+
+	public void setStages(List<Stage> stages) {
+		this.stages = stages;
+	}
+
+	
+	
+	public Employeur(Long id, String nom, String code, List<Site> sites, List<Stage> stages, User user) {
 		super();
 		this.id = id;
 		this.nom = nom;
 		this.code = code;
 		this.sites = sites;
+		this.stages = stages;
 		this.user = user;
 	}
 
