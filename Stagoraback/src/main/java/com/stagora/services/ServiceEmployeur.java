@@ -13,7 +13,7 @@ import com.stagora.dao.employers.DaoEmployeur;
 import com.stagora.dao.employers.DaoStage;
 import com.stagora.entities.employers.Employeur;
 import com.stagora.entities.employers.Stage;
-import com.stagora.utils.Functions;
+import com.stagora.utils.FonctionsUtiles;
 
 @Service
 public class ServiceEmployeur {
@@ -25,9 +25,9 @@ public class ServiceEmployeur {
 	private DaoStage daoStage;
 	
 	@Autowired
-	private Functions functions;
+	private FonctionsUtiles fonctions;
 	
-	private final String typeResponse="message";
+	private final String TYPE_MESSAGE="message";
 	
 	
 	public ResponseEntity<Map<String, String>> ajoutStage(Long id_employeur,Stage stage){
@@ -42,7 +42,7 @@ public class ServiceEmployeur {
 		// Enregistrement de l'offre de stage
 		daoStage.save(stage);
 		
-		return ResponseEntity.status(HttpStatus.CREATED).body(functions.reponse(typeResponse,"Success"));
+		return ResponseEntity.status(HttpStatus.CREATED).body(fonctions.reponse(TYPE_MESSAGE,"Success"));
 	}
 	
 	
@@ -60,19 +60,7 @@ public class ServiceEmployeur {
 	}
 	
 	
-	public Stage unStage(Long id_employeur, Long id){
-		/*
-		// Recherche de l'employeur
-		Employeur employeur = daoEmployeur.findById(id_employeur)
-											.orElseThrow( () ->  
-											new NoSuchElementException("Employeur non trouvé"));
-		
-		Stage stage = employeur.getStages().stream()
-											.filter(s -> s.getId() == id)
-											.findFirst()
-											.orElseThrow( () ->  
-													new NoSuchElementException("Stage non trouvé"));
-		*/
+	public Stage unStage(Long id){
 		
 		// get Stage s'il existe sinon renvoie une exception
 		Stage stage = daoStage.findById(id).orElseThrow(
@@ -82,7 +70,7 @@ public class ServiceEmployeur {
 	}
 
 
-	public ResponseEntity<Map<String, String>> suppressionStage(Long id_employeur, Long id){
+	public ResponseEntity<Map<String, String>> suppressionStage(Long id){
 		// get Stage s'il existe sinon renvoie une exception
 		Stage stage = daoStage.findById(id).orElseThrow(
 				() -> new NoSuchElementException("Stage non trouvé"));
@@ -90,7 +78,7 @@ public class ServiceEmployeur {
 		// Suppression du stage
 		daoStage.deleteById(stage.getId());
 		
-		return ResponseEntity.status(HttpStatus.OK).body(functions.reponse(typeResponse,"Success"));
+		return ResponseEntity.status(HttpStatus.OK).body(fonctions.reponse(TYPE_MESSAGE,"Success"));
 	}
 
 	
