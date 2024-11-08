@@ -74,13 +74,37 @@ public class ControllerAdmin {
         daoEtablissement.deleteById(id);
         return true; // Returns true to indicate successful deletion
     }
+ // Update an existing establishment with optional logo update
+    @PutMapping(value = "/etablissements/{id}", consumes = {"multipart/form-data"})
+    public Etablissement updateEtablissement(
+            @PathVariable Long id,
+            @RequestParam("nom") String nom,
+            @RequestParam("ville") String ville,
+            @RequestParam("province") String province,
+            @RequestParam(value = "logo", required = false) MultipartFile logo) {
 
-    // Update an existing establishment
-    @PutMapping("/etablissements/{id}")
-    public Etablissement updateEtablissement(@PathVariable Long id, @RequestBody Etablissement e) {
-        e.setId(id);
-        return daoEtablissement.save(e);
+        Optional<Etablissement> etablissementOpt = daoEtablissement.findById(id);
+        if (!etablissementOpt.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Etablissement not found");
+        }
+
+        Etablissement etablissement = etablissementOpt.get();
+        etablissement.setNom(nom);
+        etablissement.setVille(ville);
+        etablissement.setProvince(province);
+
+        if (logo != null && !logo.isEmpty()) {
+            try {
+                String logoFilename = saveLogo(logo); // Méthode pour sauvegarder le logo
+                etablissement.setLogo(logoFilename);
+            } catch (IOException e) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Logo upload failed");
+            }
+        }
+
+        return daoEtablissement.save(etablissement);
     }
+
 
  // Méthode privée pour sauvegarder le fichier de logo
     private String saveLogo(MultipartFile logo) throws IOException {

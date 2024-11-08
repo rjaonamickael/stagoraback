@@ -87,9 +87,9 @@ public class ServiceUser {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.reponse("Utilisateur non trouvé"));
         }
 
-        if (!user.isConfirme()) {
+       /* if (!user.isConfirme()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(this.reponse("Email non confirmé"));      
-        }
+        }*/
 
         if (this.verifMotdPasse(user, mdp)) {
             Connexion connexion = daoConnexion.findConnexionByUserId(user.getId());
