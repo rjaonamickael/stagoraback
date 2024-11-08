@@ -6,7 +6,7 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Functions {
+public class FonctionsUtiles {
 
 	public Map<String, String> reponse(String type,String message){
 		Map<String, String> reponse = new HashMap<>();

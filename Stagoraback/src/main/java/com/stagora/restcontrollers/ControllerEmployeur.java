@@ -1,4 +1,4 @@
-package com.stagora.controllers;
+package com.stagora.restcontrollers;
 
 import java.util.List;
 import java.util.Map;
@@ -49,18 +49,17 @@ public class ControllerEmployeur {
 	
 	@GetMapping(value="/stages/{id}")
 	//@Transactional   Pas vraiment nécessaire
-	public Stage getStage(@PathVariable Long id_employeur, @PathVariable Long id) {
+	public Stage getStage(@PathVariable Long id) {
 		
-		return serviceEmployeur.unStage(id_employeur,id);
+		return serviceEmployeur.unStage(id);
 	}
 	
 	
 	@DeleteMapping(value="/stages/{id}")
 	//@Transactional
-	public ResponseEntity<Map<String, String>> deleteStage(	@PathVariable Long id_employeur, 
-															@PathVariable Long id) {
+	public ResponseEntity<Map<String, String>> deleteStage(@PathVariable Long id) {
 		
-		return serviceEmployeur.suppressionStage(id_employeur,id);
+		return serviceEmployeur.suppressionStage(id);
 	}
 	
 	

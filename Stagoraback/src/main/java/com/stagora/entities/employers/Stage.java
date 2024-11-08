@@ -21,30 +21,52 @@ public class Stage implements Serializable{
 	
 	private String intitule;
 	
-	@Column(columnDefinition = "TEXT") // Puisque la description peut être une longue texte
-	private String description;
-	
 	private String categorie;
-	
-	private boolean ouvert=true;
 	
 	private int nombre_poste;
 	
-	private String adresse;
+	
+	@Column(columnDefinition = "TEXT") // Puisque la description peut être une longue texte
+	private String description;
+	
 	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	@Column(columnDefinition = "DATE")
 	private Date date_debut;
 	
+	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	@Column(columnDefinition = "DATE")
 	private Date date_fin;
+	
+	
+	private String TypeStage;
+	
+	private String modalite;
+	
+	
+	@Column(columnDefinition = "TEXT") // Puisque la description peut être une longue texte
+	private String competences;
+	
+	private String niveau;
+	
+	private int remuneration;
+	
+	private String adresse;
+	
+	
+	@Column(columnDefinition = "TEXT")
+	private String autres;
+	
+	private boolean ouvert=true;
 	
 	@ManyToOne
     @JoinColumn(name = "id_employeur", referencedColumnName = "id")
 	@JsonBackReference			// Pour éviter les boucles infini JSON à cause des relations ManyToOne
 	private Employeur employeur;
-
+	
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -61,28 +83,12 @@ public class Stage implements Serializable{
 		this.intitule = intitule;
 	}
 
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
 	public String getCategorie() {
 		return categorie;
 	}
 
 	public void setCategorie(String categorie) {
 		this.categorie = categorie;
-	}
-
-	public boolean isOuvert() {
-		return ouvert;
-	}
-
-	public void setOuvert(boolean ouvert) {
-		this.ouvert = ouvert;
 	}
 
 	public int getNombre_poste() {
@@ -93,12 +99,12 @@ public class Stage implements Serializable{
 		this.nombre_poste = nombre_poste;
 	}
 
-	public String getAdresse() {
-		return adresse;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setAdresse(String adresse) {
-		this.adresse = adresse;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public Date getDate_debut() {
@@ -117,6 +123,70 @@ public class Stage implements Serializable{
 		this.date_fin = date_fin;
 	}
 
+	public String getTypeStage() {
+		return TypeStage;
+	}
+
+	public void setTypeStage(String typeStage) {
+		TypeStage = typeStage;
+	}
+
+	public String getModalite() {
+		return modalite;
+	}
+
+	public void setModalite(String modalite) {
+		this.modalite = modalite;
+	}
+
+	public String getCompetences() {
+		return competences;
+	}
+
+	public void setCompetences(String competences) {
+		this.competences = competences;
+	}
+
+	public String getNiveau() {
+		return niveau;
+	}
+
+	public void setNiveau(String niveau) {
+		this.niveau = niveau;
+	}
+
+	public int getRemuneration() {
+		return remuneration;
+	}
+
+	public void setRemuneration(int remuneration) {
+		this.remuneration = remuneration;
+	}
+
+	public String getAdresse() {
+		return adresse;
+	}
+
+	public void setAdresse(String adresse) {
+		this.adresse = adresse;
+	}
+
+	public String getAutres() {
+		return autres;
+	}
+
+	public void setAutres(String autres) {
+		this.autres = autres;
+	}
+
+	public boolean isOuvert() {
+		return ouvert;
+	}
+
+	public void setOuvert(boolean ouvert) {
+		this.ouvert = ouvert;
+	}
+
 	public Employeur getEmployeur() {
 		return employeur;
 	}
@@ -125,18 +195,28 @@ public class Stage implements Serializable{
 		this.employeur = employeur;
 	}
 
-	public Stage(Long id, String intitule, String description, String categorie, boolean ouvert, int nombre_poste,
-			String adresse, Date date_debut, Date date_fin, Employeur employeur) {
+	
+	
+	
+	public Stage(Long id, String intitule, String categorie, int nombre_poste, String description, Date date_debut,
+			Date date_fin, String typeStage, String modalite, String competences, String niveau, int remuneration,
+			String adresse, String autres, boolean ouvert, Employeur employeur) {
 		super();
 		this.id = id;
 		this.intitule = intitule;
-		this.description = description;
 		this.categorie = categorie;
-		this.ouvert = ouvert;
 		this.nombre_poste = nombre_poste;
-		this.adresse = adresse;
+		this.description = description;
 		this.date_debut = date_debut;
 		this.date_fin = date_fin;
+		TypeStage = typeStage;
+		this.modalite = modalite;
+		this.competences = competences;
+		this.niveau = niveau;
+		this.remuneration = remuneration;
+		this.adresse = adresse;
+		this.autres = autres;
+		this.ouvert = ouvert;
 		this.employeur = employeur;
 	}
 
