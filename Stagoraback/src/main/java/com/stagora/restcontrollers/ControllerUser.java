@@ -1,4 +1,4 @@
-package com.stagora.controllers;
+package com.stagora.restcontrollers;
 
 import java.util.Map;
 
