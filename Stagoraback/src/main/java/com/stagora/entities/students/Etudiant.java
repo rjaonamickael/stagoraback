@@ -1,5 +1,6 @@
 package com.stagora.entities.students;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.stagora.entities.users.User;
 
 import jakarta.persistence.Column;
@@ -30,6 +31,7 @@ public class Etudiant {
 	
 	@ManyToOne
     @JoinColumn(name = "id_etablissement", referencedColumnName = "id")
+	@JsonBackReference
     private Etablissement etablissement;
 	
 	
