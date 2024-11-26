@@ -2,6 +2,7 @@ package com.stagora.entities.users;
 
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +26,7 @@ public class Connexion {
 	
 	@OneToOne
     @JoinColumn(name = "id_user", referencedColumnName = "id")
+	@JsonManagedReference("connexion-user")
     private User user;
 
 	
