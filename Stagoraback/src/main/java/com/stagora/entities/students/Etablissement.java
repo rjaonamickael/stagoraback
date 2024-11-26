@@ -31,7 +31,7 @@ public class Etablissement implements Serializable {
 	
 	// Relation OneToMany avec Etudiant
 	@OneToMany(mappedBy = "etablissement", cascade = CascadeType.ALL)
-	@JsonBackReference("etudiant-etablissement")
+	@JsonManagedReference("etudiant-etablissement")
     private List<Etudiant> etudiants;
 
 
