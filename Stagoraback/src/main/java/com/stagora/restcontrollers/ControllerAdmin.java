@@ -1,80 +1,138 @@
 package com.stagora.restcontrollers;
 
-
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.stagora.dao.students.DaoEtablissement;
 import com.stagora.entities.students.Etablissement;
-import com.stagora.services.ServiceAdmin;
 
 @RestController
-@CrossOrigin("*") // Pour régler ce problème Access-Control-Allow-Origin
+@CrossOrigin("*") // To resolve CORS issues
 @RequestMapping("/admin")
 public class ControllerAdmin {
-	
-	@Autowired
-	private ServiceAdmin serviceAdmin;
-	
-//	@Autowired
-//    private ImageStorageService imageStorageService;
-	
-	
-	// REQUÊTE POUR TOUT CE QUI CONCERNE LES ETABLISSEMENT
-	// Tous les établissement
-	@GetMapping("/etablissements")
-	public List<Etablissement> getAllEtablissement(){
-		
-		return serviceAdmin.toutEtablissement();
-	}
-	
-	// Un établissement
-	@GetMapping("/etablissements/{id}")
-	public Etablissement getEtablissement(@PathVariable Long id){
-		
-		return serviceAdmin.unEtablissement(id);
-	}
-	
-	// Ajout d'un Etablissement
-	@PostMapping("/etablissements")
-	public ResponseEntity<Map<String, String>> addEtablissement(@RequestBody Etablissement e){
-		
-		return serviceAdmin.ajoutEtablissement(e);
-	}
-	
-	// Suppression d'établissement
-	@DeleteMapping("/etablissements/{id}")
-	public ResponseEntity<Map<String, String>> deleteEtablissement(@PathVariable Long id){
-		
-		return serviceAdmin.suppressionEtablissement(id);
 
-	}
-	
-	// Modification d'un établissement
-	@PutMapping("/etablissements/{id}")
-	public ResponseEntity<Map<String, String>> updateEtablissement(	@PathVariable Long id,
-																	@RequestBody Etablissement e){
-		
-		return serviceAdmin.misajourEtablissement(id, e);
-	}
-	
-	@PostMapping(value = "/uploadImage", consumes = "multipart/form-data")
-	public String uploadImage(@RequestParam("file") MultipartFile file) {
-	    // Logique pour enregistrer le fichier
-	    return "Fichier enregistré avec succès";
-	}
+    @Autowired
+    private DaoEtablissement daoEtablissement;
+
+    // Injecting the directory path from application.properties
+    @Value("${file.upload-dir:D:/session5/projet/stagorafront/src/files/images}")
+    private String uploadDir;
+
+    // Retrieve all establishments
+    @GetMapping("/etablissements")
+    public List<Etablissement> getAllEtablissement() {
+        return daoEtablissement.findAll();
+    }
+
+    // Retrieve a single establishment by ID
+    @GetMapping("/etablissements/{id}")
+    public Optional<Etablissement> getEtablissement(@PathVariable Long id) {
+        return daoEtablissement.findById(id);
+    }
+
+    // Add an establishment with an optional logo
+    @PostMapping(value = "/etablissements", consumes = {"multipart/form-data"})
+    public Etablissement addEtablissement(
+            @RequestParam("nom") String nom,
+            @RequestParam("ville") String ville,
+            @RequestParam("province") String province,
+            @RequestParam(value = "logo", required = false) MultipartFile logo) {
+
+        Etablissement etablissement = new Etablissement();
+        etablissement.setNom(nom);
+        etablissement.setVille(ville);
+        etablissement.setProvince(province);
+
+        // If a logo file is provided, save it and set only the filename in the entity
+        if (logo != null && !logo.isEmpty()) {
+            try {
+                String logoFilename = saveLogo(logo);
+                etablissement.setLogo(logoFilename);
+                System.out.println("Logo filename saved to DB: " + logoFilename); // Vérifiez le nom du fichier sauvegardé
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Etablissement savedEtablissement = daoEtablissement.save(etablissement);
+        System.out.println("Etablissement saved with logo: " + savedEtablissement.getLogo());
+        return savedEtablissement;
+    }
+
+    // Delete an establishment by ID
+    @DeleteMapping("/etablissements/{id}")
+    public boolean deleteEtablissement(@PathVariable Long id) {
+        daoEtablissement.deleteById(id);
+        return true; // Returns true to indicate successful deletion
+    }
+ // Update an existing establishment with optional logo update
+    @PutMapping(value = "/etablissements/{id}", consumes = {"multipart/form-data"})
+    public Etablissement updateEtablissement(
+            @PathVariable Long id,
+            @RequestParam("nom") String nom,
+            @RequestParam("ville") String ville,
+            @RequestParam("province") String province,
+            @RequestParam(value = "logo", required = false) MultipartFile logo) {
+
+        Optional<Etablissement> etablissementOpt = daoEtablissement.findById(id);
+        if (!etablissementOpt.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Etablissement not found");
+        }
+
+        Etablissement etablissement = etablissementOpt.get();
+        etablissement.setNom(nom);
+        etablissement.setVille(ville);
+        etablissement.setProvince(province);
+
+        if (logo != null && !logo.isEmpty()) {
+            try {
+                String logoFilename = saveLogo(logo); // Méthode pour sauvegarder le logo
+                etablissement.setLogo(logoFilename);
+            } catch (IOException e) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Logo upload failed");
+            }
+        }
+
+        return daoEtablissement.save(etablissement);
+    }
+
+
+ // Méthode privée pour sauvegarder le fichier de logo
+    private String saveLogo(MultipartFile logo) throws IOException {
+        String directoryPath = "D:/session5/projet/stagorafront/src/files/images";
+        File directory = new File(directoryPath);
+
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        String filename = System.currentTimeMillis() + "_" + logo.getOriginalFilename();
+        File fileToSave = new File(directory, filename);
+        logo.transferTo(fileToSave);
+
+        System.out.println("File saved to backend directory: " + filename);  // Log the saved filename
+        return filename;
+    }
+
+
+    // Validate file type and size
+    private void validateLogoFile(MultipartFile logo) {
+        String contentType = logo.getContentType();
+        if (contentType == null || (!contentType.equals("image/jpeg") && !contentType.equals("image/png") && !contentType.equals("image/gif"))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported file type. Only JPEG, PNG, and GIF are allowed.");
+        }
+        if (logo.getSize() > 5 * 1024 * 1024) { // 5 MB limit
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File size exceeds the 5MB limit.");
+        }
+    }
 }
+
