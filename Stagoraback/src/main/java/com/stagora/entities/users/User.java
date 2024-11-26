@@ -45,6 +45,7 @@ public class User {
     
     
     @OneToOne(mappedBy = "user", cascade = CascadeType.MERGE )  // Juste pour la mise à jour avec MERGE
+    @JsonBackReference("connexion-user")
     private Connexion connexion;
 
 
