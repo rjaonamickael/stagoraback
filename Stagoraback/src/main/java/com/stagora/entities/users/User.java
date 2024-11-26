@@ -2,6 +2,7 @@ package com.stagora.entities.users;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.stagora.entities.employers.Employeur;
 import com.stagora.entities.students.Etudiant;
 import com.stagora.utils.user.TypeCompte;
@@ -36,6 +37,7 @@ public class User {
 	
     // Relation OneToOne avec Etudiant et Employeur
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonBackReference("etudiant-user")
     private Etudiant etudiant;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)

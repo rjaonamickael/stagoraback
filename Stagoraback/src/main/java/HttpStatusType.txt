@@ -6,6 +6,8 @@ Ces codes indiquent que le serveur a reçu la requête et continue de la traiter
 100 CONTINUE : Le client doit continuer avec la requête.
 101 SWITCHING_PROTOCOLS : Le serveur accepte de changer le protocole.
 102 PROCESSING : (WebDAV) Requête en traitement.
+
+
 2. Codes 2xx : Succès
 Ces codes signifient que la requête a été reçue, comprise, et acceptée avec succès.
 
@@ -13,6 +15,8 @@ Ces codes signifient que la requête a été reçue, comprise, et acceptée avec
 201 CREATED : Ressource créée avec succès (utile pour les opérations de création).
 202 ACCEPTED : Requête acceptée mais pas encore traitée.
 204 NO_CONTENT : Requête réussie, mais aucune réponse à fournir (souvent pour les suppressions).
+
+
 3. Codes 3xx : Redirections
 Ces codes indiquent que des actions supplémentaires sont nécessaires pour finaliser la requête.
 
@@ -20,6 +24,8 @@ Ces codes indiquent que des actions supplémentaires sont nécessaires pour fina
 302 FOUND : Redirection temporaire (anciennement Moved Temporarily).
 304 NOT_MODIFIED : La ressource n’a pas changé, ce qui permet d’économiser de la bande passante.
 307 TEMPORARY_REDIRECT : Redirection temporaire sans changement de méthode HTTP.
+
+
 4. Codes 4xx : Erreurs côté client
 Ces erreurs indiquent que le problème provient de la requête envoyée par le client.
 
@@ -30,6 +36,8 @@ Ces erreurs indiquent que le problème provient de la requête envoyée par le c
 405 METHOD_NOT_ALLOWED : Méthode HTTP non autorisée pour la ressource.
 409 CONFLICT : Conflit, par exemple lors d’une création de ressource avec des données déjà existantes.
 429 TOO_MANY_REQUESTS : Trop de requêtes envoyées dans un laps de temps (limite de taux).
+
+
 5. Codes 5xx : Erreurs côté serveur
 Ces erreurs indiquent un problème côté serveur lors de la gestion de la requête.
 
@@ -38,6 +46,8 @@ Ces erreurs indiquent un problème côté serveur lors de la gestion de la requ�
 502 BAD_GATEWAY : Réponse invalide reçue d’un autre serveur (serveur proxy/gateway).
 503 SERVICE_UNAVAILABLE : Serveur indisponible temporairement (en maintenance ou surchargé).
 504 GATEWAY_TIMEOUT : Temps d’attente dépassé pour une réponse d’un autre serveur.
+
+
 Autres codes utiles en développement d’API
 206 PARTIAL_CONTENT : Réponse partielle (utile pour la pagination de contenu).
 410 GONE : La ressource n’est plus disponible et cette situation est permanente.

@@ -3,6 +3,7 @@ package com.stagora.entities.students;
 import java.io.Serializable;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -30,7 +31,7 @@ public class Etablissement implements Serializable {
 	
 	// Relation OneToMany avec Etudiant
 	@OneToMany(mappedBy = "etablissement", cascade = CascadeType.ALL)
-	@JsonManagedReference
+	@JsonBackReference("etudiant-etablissement")
     private List<Etudiant> etudiants;
 
 
