@@ -33,7 +33,7 @@ public class Etudiant {
 	
 	@ManyToOne
     @JoinColumn(name = "id_etablissement", referencedColumnName = "id")
-	@JsonManagedReference("etudiant-etablissement")
+	@JsonBackReference("etudiant-etablissement")
     private Etablissement etablissement;
 	
 	
