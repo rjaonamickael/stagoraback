@@ -2,10 +2,14 @@ package com.stagora.entities.employers;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.stagora.entities.students.Candidature;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,6 +17,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Stage implements Serializable{
@@ -45,7 +51,7 @@ public class Stage implements Serializable{
 	private String modalite;
 	
 	
-	@Column(columnDefinition = "TEXT") // Puisque la description peut être une longue texte
+	@Column(columnDefinition = "TEXT")
 	private String competences;
 	
 	private String niveau;
@@ -64,6 +70,10 @@ public class Stage implements Serializable{
     @JoinColumn(name = "id_employeur", referencedColumnName = "id")
 	@JsonBackReference			// Pour éviter les boucles infini JSON à cause des relations ManyToOne
 	private Employeur employeur;
+	
+	@OneToMany(mappedBy = "stage", cascade = CascadeType.ALL)
+    @JsonManagedReference("stage-canditature")
+	private List<Candidature> candidatures;
 	
 	
 	
@@ -194,13 +204,21 @@ public class Stage implements Serializable{
 	public void setEmployeur(Employeur employeur) {
 		this.employeur = employeur;
 	}
+	
+	public List<Candidature> getCandidatures() {
+		return candidatures;
+	}
+	
+	public void setCandidatures(List<Candidature> candidatures) {
+		this.candidatures = candidatures;
+	}
 
 	
 	
 	
 	public Stage(Long id, String intitule, String categorie, int nombre_poste, String description, Date date_debut,
 			Date date_fin, String typeStage, String modalite, String competences, String niveau, int remuneration,
-			String adresse, String autres, boolean ouvert, Employeur employeur) {
+			String adresse, String autres, boolean ouvert, Employeur employeur, List<Candidature> candidatures) {
 		super();
 		this.id = id;
 		this.intitule = intitule;
@@ -218,6 +236,7 @@ public class Stage implements Serializable{
 		this.autres = autres;
 		this.ouvert = ouvert;
 		this.employeur = employeur;
+		this.candidatures = candidatures;
 	}
 
 	public Stage() {
