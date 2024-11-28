@@ -1,9 +1,12 @@
 package com.stagora.entities.students;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.stagora.entities.users.User;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
 @Entity
@@ -35,6 +39,11 @@ public class Etudiant {
     @JoinColumn(name = "id_etablissement", referencedColumnName = "id")
 	@JsonBackReference("etudiant-etablissement")
     private Etablissement etablissement;
+	
+	
+	@OneToMany(mappedBy = "etudiant", cascade = CascadeType.ALL)
+	@JsonManagedReference("etudiant-canditature")
+	private List<Candidature> candidatures;
 	
 	
 
@@ -109,8 +118,21 @@ public class Etudiant {
 	}
 
 	
+	
 
-	public Etudiant(Long id, String nom, String prenom, String apropos, User user, Etablissement etablissement) {
+	public List<Candidature> getCandidatures() {
+		return candidatures;
+	}
+
+
+
+	public void setCandidatures(List<Candidature> candidatures) {
+		this.candidatures = candidatures;
+	}
+
+
+
+	public Etudiant(Long id, String nom, String prenom, String apropos, User user, Etablissement etablissement, List<Candidature> candidatures) {
 		super();
 		this.id = id;
 		this.nom = nom;
@@ -118,6 +140,7 @@ public class Etudiant {
 		this.apropos = apropos;
 		this.user = user;
 		this.etablissement = etablissement;
+		this.candidatures = candidatures;
 	}
 
 
