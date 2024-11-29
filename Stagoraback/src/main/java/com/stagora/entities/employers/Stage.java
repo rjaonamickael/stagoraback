@@ -8,10 +8,13 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.stagora.entities.students.Candidature;
+import com.stagora.utils.employeur.ModaliteStage;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -45,10 +48,11 @@ public class Stage implements Serializable{
 	@Column(columnDefinition = "DATE")
 	private Date date_fin;
 	
+	@Column(name = "type_stage")
+	private String typeStage;
 	
-	private String TypeStage;
-	
-	private String modalite;
+	@Enumerated(EnumType.STRING)
+	private ModaliteStage modalite = ModaliteStage.PRESENTIEL;
 	
 	
 	@Column(columnDefinition = "TEXT")
@@ -134,18 +138,18 @@ public class Stage implements Serializable{
 	}
 
 	public String getTypeStage() {
-		return TypeStage;
+		return typeStage;
 	}
 
 	public void setTypeStage(String typeStage) {
-		TypeStage = typeStage;
+		this.typeStage = typeStage;
 	}
 
-	public String getModalite() {
+	public ModaliteStage getModalite() {
 		return modalite;
 	}
 
-	public void setModalite(String modalite) {
+	public void setModalite(ModaliteStage modalite) {
 		this.modalite = modalite;
 	}
 
@@ -217,7 +221,7 @@ public class Stage implements Serializable{
 	
 	
 	public Stage(Long id, String intitule, String categorie, int nombre_poste, String description, Date date_debut,
-			Date date_fin, String typeStage, String modalite, String competences, String niveau, int remuneration,
+			Date date_fin, String typeStage, ModaliteStage modalite, String competences, String niveau, int remuneration,
 			String adresse, String autres, boolean ouvert, Employeur employeur, List<Candidature> candidatures) {
 		super();
 		this.id = id;
@@ -227,7 +231,7 @@ public class Stage implements Serializable{
 		this.description = description;
 		this.date_debut = date_debut;
 		this.date_fin = date_fin;
-		TypeStage = typeStage;
+		this.typeStage = typeStage;
 		this.modalite = modalite;
 		this.competences = competences;
 		this.niveau = niveau;
