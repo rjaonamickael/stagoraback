@@ -3,17 +3,23 @@ package com.stagora.restcontrollers;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.stagora.dao.students.DaoEtablissement;
 import com.stagora.entities.students.Etablissement;
+import com.stagora.services.ServiceAdmin;
+import com.stagora.utils.FonctionsUtiles;
 
 @RestController
 @CrossOrigin("*") // To resolve CORS issues
@@ -22,60 +28,62 @@ public class ControllerAdmin {
 
     @Autowired
     private DaoEtablissement daoEtablissement;
-
-    // Injecting the directory path from application.properties
-    @Value("${file.upload-dir:D:/session5/projet/stagorafront/src/files/images}")
-    private String uploadDir;
+    
+	@Autowired
+	private FonctionsUtiles functions;
+    
+    @Autowired
+	private ServiceAdmin serviceAdmin;
 
     // Retrieve all establishments
     @GetMapping("/etablissements")
     public List<Etablissement> getAllEtablissement() {
-        return daoEtablissement.findAll();
+        
+    	return serviceAdmin.toutEtablissement();
     }
 
     // Retrieve a single establishment by ID
     @GetMapping("/etablissements/{id}")
-    public Optional<Etablissement> getEtablissement(@PathVariable Long id) {
-        return daoEtablissement.findById(id);
+    public Etablissement getEtablissement(@PathVariable Long id) {
+        
+    	return serviceAdmin.unEtablissement(id);
     }
 
     // Add an establishment with an optional logo
-    @PostMapping(value = "/etablissements", consumes = {"multipart/form-data"})
-    public Etablissement addEtablissement(
-            @RequestParam("nom") String nom,
-            @RequestParam("ville") String ville,
-            @RequestParam("province") String province,
-            @RequestParam(value = "logo", required = false) MultipartFile logo) {
+    @PostMapping(value = "/etablissements", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Transactional
+    public ResponseEntity<Etablissement> addEtablissement(
+            @RequestParam String nom,
+            @RequestParam String ville,
+            @RequestParam String province,
+            @RequestParam(required = false) MultipartFile logo) {
+        
+    	try {
+			
+    		return serviceAdmin.ajoutEtablissement(nom, ville, province, logo);
+    		
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+			
+		}
 
-        Etablissement etablissement = new Etablissement();
-        etablissement.setNom(nom);
-        etablissement.setVille(ville);
-        etablissement.setProvince(province);
-
-        // If a logo file is provided, save it and set only the filename in the entity
-        if (logo != null && !logo.isEmpty()) {
-            try {
-                String logoFilename = saveLogo(logo);
-                etablissement.setLogo(logoFilename);
-                System.out.println("Logo filename saved to DB: " + logoFilename); // Vérifiez le nom du fichier sauvegardé
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        Etablissement savedEtablissement = daoEtablissement.save(etablissement);
-        System.out.println("Etablissement saved with logo: " + savedEtablissement.getLogo());
-        return savedEtablissement;
     }
 
     // Delete an establishment by ID
     @DeleteMapping("/etablissements/{id}")
+    @Transactional
     public boolean deleteEtablissement(@PathVariable Long id) {
-        daoEtablissement.deleteById(id);
+        
+    	serviceAdmin.suppressionEtablissement(id);
+        
         return true; // Returns true to indicate successful deletion
     }
- // Update an existing establishment with optional logo update
+    
+    
+    // Update an existing establishment with optional logo update
     @PutMapping(value = "/etablissements/{id}", consumes = {"multipart/form-data"})
+    @Transactional
     public Etablissement updateEtablissement(
             @PathVariable Long id,
             @RequestParam("nom") String nom,
@@ -135,3 +143,4 @@ public class ControllerAdmin {
         }
     }
 }
+

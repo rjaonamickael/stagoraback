@@ -2,6 +2,7 @@ package com.stagora.entities.users;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.stagora.entities.employers.Employeur;
 import com.stagora.entities.students.Etudiant;
 import com.stagora.utils.user.TypeCompte;
@@ -14,7 +15,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
+
+/*
+ * En PostgreSQL, user est un mot réservé, ce qui provoque une erreur de syntaxe 
+ * lors de la création de la table.
+ * 
+ * */
 @Entity
 public class User {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +44,7 @@ public class User {
 	
     // Relation OneToOne avec Etudiant et Employeur
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonBackReference("etudiant-user")
     private Etudiant etudiant;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
@@ -43,6 +52,7 @@ public class User {
     
     
     @OneToOne(mappedBy = "user", cascade = CascadeType.MERGE )  // Juste pour la mise à jour avec MERGE
+    @JsonBackReference("connexion-user")
     private Connexion connexion;
 
 
