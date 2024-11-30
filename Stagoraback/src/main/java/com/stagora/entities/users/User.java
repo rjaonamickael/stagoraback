@@ -15,7 +15,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
+
+/*
+ * En PostgreSQL, user est un mot réservé, ce qui provoque une erreur de syntaxe 
+ * lors de la création de la table.
+ * 
+ * */
 @Entity
 public class User {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
