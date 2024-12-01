@@ -91,21 +91,17 @@ public class ControllerEmployeur {
     // Mettre a jour un employeur en utilisant id_user 
     @PutMapping(value = "/user/{id_user}")
     @Transactional
-    public ResponseEntity<String> updateEmployeurByUserId(@PathVariable Long id_user, @RequestBody RequestInscriptionEmployeur req) {
+    public ResponseEntity<Employeur> updateEmployeurByUserId(@PathVariable Long id_user, @RequestBody RequestInscriptionEmployeur req) {
         try {
             // Appel au service pour mettre à jour l'employeur en utilisant l'id_user et l'objet RequestInscriptionEmployeur
-            serviceEmployeur.updateEmployeurByUserId(id_user, req);
+            Employeur employeur = serviceEmployeur.updateEmployeurByUserId(id_user, req);
 
-            // Réponse de succès si tout se passe bien
-            return ResponseEntity.ok("Employeur mis à jour avec succès.");
+            // Réponse avec l'objet Employeur mis à jour
+            return ResponseEntity.ok(employeur);
         } catch (NoSuchElementException e) {
             // En cas d'erreur (si l'employeur ou l'utilisateur n'est pas trouvé)
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Employeur non trouvé.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-
-
-    
-
 
 }

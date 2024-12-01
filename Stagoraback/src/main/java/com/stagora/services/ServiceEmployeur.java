@@ -120,8 +120,8 @@ public class ServiceEmployeur {
 		return employeur;
 	}
 	
-	// Methode pour mettre a jour un employeur by id_user
-	public ResponseEntity<Map<String, String>> updateEmployeurByUserId(Long id_user, RequestInscriptionEmployeur req) {
+	// Methode pour mettre à jour un employeur by id_user
+	public Employeur updateEmployeurByUserId(Long id_user, RequestInscriptionEmployeur req) {
 	    // Vérification si l'utilisateur existe
 	    User user = daoUser.findById(id_user)
 	                       .orElseThrow(() -> new NoSuchElementException("Utilisateur non trouvé"));
@@ -171,13 +171,13 @@ public class ServiceEmployeur {
 	            employeur.getSites().add(site); // Ajouter le site à la liste
 	        }
 	    }
-
 	    
 	    // Sauvegarde de l'employeur mis à jour
 	    daoEmployeur.save(employeur);
 
-	    return ResponseEntity.status(HttpStatus.OK).body(this.reponse("Mise à jour réussie"));
+	    return employeur; // Renvoi de l'objet employeur mis à jour
 	}
+
 	
 	private void verifDisponibiliteEmail(User user) {
         if (daoUser.findUserByEmail(user.getEmail()) != null) {
@@ -192,7 +192,4 @@ public class ServiceEmployeur {
         reponse.put("message", message);
         return reponse;
     }
-
-
-	
 }
