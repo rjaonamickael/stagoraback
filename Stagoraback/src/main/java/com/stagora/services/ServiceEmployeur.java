@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.stagora.dao.employers.DaoEmployeur;
+import com.stagora.dao.employers.DaoSite;
 import com.stagora.dao.employers.DaoStage;
 import com.stagora.dao.users.DaoUser;
 import com.stagora.entities.employers.Employeur;
@@ -32,6 +33,9 @@ public class ServiceEmployeur {
 	
 	@Autowired
 	private DaoUser daoUser;
+	
+	@Autowired
+	private DaoSite daoSite;
 	
 	@Autowired
 	private FonctionsUtiles fonctions;
@@ -145,23 +149,28 @@ public class ServiceEmployeur {
 	    employeur.setCode(req.getEmployeur().getCode());
 	    
 	    // Ajouter d'autres champs à mettre à jour ici pour l'employeur
-	    employeur.setSites(req.getEmployeur().getSites()); // Si vous voulez mettre à jour les sites
+	    // employeur.setSites(req.getEmployeur().getSites()); // Si vous voulez mettre à jour les sites
 
-	    // Mise à jour des sites si nécessaire
+	    // Mise à jour des sites
 	    List<Site> nouveauxSites = req.getEmployeur().getSites();
 	    if (nouveauxSites != null) {
 	        // Détacher les anciens sites
-	        for (Site site : employeur.getSites()) {
-	            site.setEmployeur(null);  // Enlever la référence à l'employeur
+	        List<Site> anciensSites = employeur.getSites();
+	        if (anciensSites != null) {
+	            for (Site site : anciensSites) {
+	                site.setEmployeur(null); // Supprimer la liaison avec l'employeur
+	                daoSite.delete(site);   // Supprimer les anciens sites si nécessaire
+	            }
+	            employeur.getSites().clear(); // Vider la liste des anciens sites
 	        }
-	        employeur.getSites().clear();  // Vider la liste des anciens sites
 
 	        // Ajouter les nouveaux sites et les rattacher à l'employeur
 	        for (Site site : nouveauxSites) {
-	            site.setEmployeur(employeur);  // Rattacher chaque site à l'employeur
+	            site.setId(null); // Si vous voulez recréer les sites (sinon, gérez les IDs)
+	            site.setEmployeur(employeur); // Rattacher le site à l'employeur
 	            employeur.getSites().add(site); // Ajouter le site à la liste
 	        }
-    	}
+	    }
 
 	    
 	    // Sauvegarde de l'employeur mis à jour
