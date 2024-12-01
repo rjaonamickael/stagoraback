@@ -48,6 +48,7 @@ public class User {
     private Etudiant etudiant;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonBackReference("employeur-user")  // Ajout de la référence inverse pour Employeur
     private Employeur employeur;
     
     
