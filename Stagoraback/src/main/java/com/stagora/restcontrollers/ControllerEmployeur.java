@@ -89,7 +89,7 @@ public class ControllerEmployeur {
     }
     
     // Mettre a jour un employeur en utilisant id_user 
-    @PutMapping("/user/{id_user}")
+    @PutMapping(value = "/user/{id_user}")
     @Transactional
     public ResponseEntity<String> updateEmployeurByUserId(@PathVariable Long id_user, @RequestBody RequestInscriptionEmployeur req) {
         try {
