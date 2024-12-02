@@ -38,13 +38,10 @@ public class ControllerUser {
 
     // Connexion utilisateur
     @PostMapping("/connexion")
-    public ResponseEntity<Map<String, String>> connect(@RequestBody Map<String, String> credentials) {
-        String email = credentials.get("email");
-        String mdp = credentials.get("mdp");
+    public ResponseEntity<Map<String, String>> connect(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String mdp = request.get("mdp");
 
-        if (email == null || mdp == null) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Email et mot de passe sont requis"));
-        }
         return serviceUser.connection(email, mdp);
     }
 
