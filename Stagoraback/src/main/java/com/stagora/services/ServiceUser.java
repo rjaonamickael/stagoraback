@@ -107,8 +107,18 @@ public class ServiceUser {
             connexion.setDate_connexion(LocalDateTime.now());
             connexion.setUser(user);
             daoConnexion.save(connexion);
+            
+            
+            //    IL FAUT AMELIORER CE CODE 
+            // Inclure l'ID utilisateur dans la réponse
+            Map<String,String> response = new HashMap<>();
+            response.put("message", "Connection réussie");
+            response.put("userId", String.valueOf(user.getId())); // Ajouter l'ID utilisateur
+            response.put("email", user.getEmail());
+            response.put("typeCompte", user.getTypeCompte().toString());
+            
 
-            return ResponseEntity.status(HttpStatus.OK).body(this.reponse("Connexion réussie"));
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(this.reponse("Mauvais mot de passe"));
         }
