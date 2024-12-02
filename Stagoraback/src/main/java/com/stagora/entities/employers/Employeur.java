@@ -36,6 +36,7 @@ public class Employeur implements Serializable{
 	
 	@OneToOne
     @JoinColumn(name = "id_user", referencedColumnName = "id")
+	@JsonManagedReference("employeur-user") // Sérialisation gérée pour la relation avec User
     private User user;
 
 	
