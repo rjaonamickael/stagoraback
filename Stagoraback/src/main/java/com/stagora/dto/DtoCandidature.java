@@ -5,6 +5,7 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.stagora.entities.students.Candidature;
+import com.stagora.utils.etudiant.EtatCandidature;
 
 public class DtoCandidature {
 	
@@ -14,6 +15,9 @@ public class DtoCandidature {
 	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	private Date date_candidature;
+	
+	@JsonFormat(shape = JsonFormat.Shape.STRING)
+	private EtatCandidature etatCandidature;
 	
 	@JsonFormat(shape = JsonFormat.Shape.STRING)
 	private String cv;
@@ -41,6 +45,14 @@ public class DtoCandidature {
 
 	public void setDate_candidature(Date date_candidature) {
 		this.date_candidature = date_candidature;
+	}
+	
+	public EtatCandidature getEtatCandidature() {
+		return etatCandidature;
+	}
+	
+	public void setEtatCandidature(EtatCandidature etatCandidature) {
+		this.etatCandidature = etatCandidature;
 	}
 
 	public String getCv() {
@@ -75,10 +87,13 @@ public class DtoCandidature {
 		this.id_stage = id_stage;
 	}
 	
+	
+	
 	public static DtoCandidature toDTOCandidature(Candidature c) {
 		DtoCandidature dto = new DtoCandidature();
 		dto.setId(c.getId());
 		dto.setDate_candidature(c.getDate_candidature());
+		dto.setEtatCandidature(c.getEtatCandidature());
 		dto.setCv(c.getCv());
 		dto.setLettreMotivation(c.getLettreMotivation());
 		dto.setId_etudiant(c.getEtudiant().getId());
