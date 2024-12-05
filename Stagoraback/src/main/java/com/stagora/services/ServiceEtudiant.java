@@ -15,6 +15,7 @@ import com.stagora.dao.students.DaoEtudiant;
 import com.stagora.dto.DtoCandidature;
 import com.stagora.entities.employers.Stage;
 import com.stagora.entities.students.Candidature;
+import com.stagora.entities.students.Etablissement;
 import com.stagora.entities.students.Etudiant;
 import com.stagora.utils.employeur.ModaliteStage;
 import com.stagora.utils.etudiant.EtatCandidature;
@@ -73,5 +74,15 @@ public class ServiceEtudiant {
 		return ResponseEntity.status(HttpStatus.OK).body(stages);
 	
 	}
+	
+	// Service pour récupérer tous les étudiants
+	public List<Etudiant> getAllEtudiants(){
+		return daoEtudiant.findAll();
+		//Pageable pageable = PageRequest.of(0, 10);
+		//Page<Student> studentPage = studentRepository.findAll(pageable);
+		// return studentPage;
+	}
+	
+	
 	
 }
