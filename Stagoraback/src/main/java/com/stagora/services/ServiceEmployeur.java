@@ -6,6 +6,9 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -13,10 +16,13 @@ import org.springframework.stereotype.Service;
 import com.stagora.dao.employers.DaoEmployeur;
 import com.stagora.dao.employers.DaoSite;
 import com.stagora.dao.employers.DaoStage;
+import com.stagora.dao.students.DaoCandidature;
 import com.stagora.dao.users.DaoUser;
+import com.stagora.dto.DtoCandidature;
 import com.stagora.entities.employers.Employeur;
 import com.stagora.entities.employers.Site;
 import com.stagora.entities.employers.Stage;
+import com.stagora.entities.students.Candidature;
 import com.stagora.entities.users.User;
 import com.stagora.utils.FonctionsUtiles;
 import com.stagora.utils.exceptions.EmailNonDisponibleException;
@@ -36,6 +42,9 @@ public class ServiceEmployeur {
 	
 	@Autowired
 	private DaoSite daoSite;
+	
+	@Autowired
+	private DaoCandidature daoCandidature;
 	
 	@Autowired
 	private FonctionsUtiles fonctions;
@@ -177,7 +186,46 @@ public class ServiceEmployeur {
 
 	    return employeur; // Renvoi de l'objet employeur mis à jour
 	}
-
+	
+	
+	// Méthode pour récupérer toutes les candidatures d'un employeur par page
+	public ResponseEntity<Page<DtoCandidature>> getAllCandidatureByPage(Long idEmployeur,int page, int size){ 
+		
+		// instanciation d'un pageable pour la pagination
+		Pageable pageable = PageRequest.of(page, size);
+		
+		// get des candidatures en utilisant un pageable
+		Page<Candidature> pageCandidature = daoCandidature.findAllCandidatureEmployeur(idEmployeur, pageable);
+		
+		// Conversion de la pageCandidature en pageCandidatureDTO
+		Page<DtoCandidature> pageCandidatureDTO = pageCandidature.map(DtoCandidature::toDTOCandidature);
+		
+		
+		return ResponseEntity.ok(pageCandidatureDTO);
+	}
+	
+	
+	// Récupérer toutes les candidatures d'un stage par page
+	public ResponseEntity<Page<DtoCandidature>> getAllCandidatureStageByPage(Long id_stage,int page, int size){ 
+		
+		// instanciation d'un pageable pour la pagination
+		Pageable pageable = PageRequest.of(page, size);
+		
+		// get des candidatures en utilisant un pageable
+		Page<Candidature> pageCandidature = daoCandidature.findCandidatureByStage(id_stage, pageable);
+		
+		// Conversion de la pageCandidature en pageCandidatureDTO
+		Page<DtoCandidature> pageCandidatureDTO = pageCandidature.map(DtoCandidature::toDTOCandidature);
+		
+		
+		return ResponseEntity.ok(pageCandidatureDTO);
+	}
+	
+	
+	
+	
+	
+	
 	
 	private void verifDisponibiliteEmail(User user) {
         if (daoUser.findUserByEmail(user.getEmail()) != null) {
