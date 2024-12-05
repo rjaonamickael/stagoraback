@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.stagora.dto.DtoCandidature;
 import com.stagora.entities.employers.Employeur;
 import com.stagora.entities.employers.Stage;
 import com.stagora.entities.users.User;
@@ -103,5 +105,25 @@ public class ControllerEmployeur {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+    
+    @GetMapping(value = "/candidatures")
+    public ResponseEntity<Page<DtoCandidature>> getAllCandidatureByPage(
+							    		@PathVariable Long id_employeur, 
+							    		@RequestParam(value = "page", defaultValue = "0") int page, 
+							    		@RequestParam(value = "size", defaultValue = "10") int size){ 
+		
+		return serviceEmployeur.getAllCandidatureByPage(id_employeur, page, size);
+	}
+    
+    
+    @GetMapping(value = "/candidatures-stage/{id_stage}")
+    public ResponseEntity<Page<DtoCandidature>> getAllCandidatureStageByPage(
+    		@PathVariable Long id_stage, 
+    		@RequestParam(value = "page", defaultValue = "0") int page, 
+    		@RequestParam(value = "size", defaultValue = "10") int size){ 
+		
+		return serviceEmployeur.getAllCandidatureStageByPage(id_stage, page, size);
+	}
+    
 
 }
