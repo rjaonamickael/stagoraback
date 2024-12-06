@@ -33,11 +33,14 @@ public class Etudiant {
 
     private String adresse;
 
-    private String competences;
+    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
+    private List<Competence> competences;
 
-    private String experiences;
+    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
+    private List<Experience> experiences;
 
-    private String formation;
+    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
+    private List<Formation> formation;
 
     @Column(name = "numero_telephone")
     private String numeroTelephone;
@@ -97,27 +100,27 @@ public class Etudiant {
         this.adresse = adresse;
     }
 
-    public String getCompetences() {
+    public List<Competence> getCompetences() {
         return competences;
     }
 
-    public void setCompetences(String competences) {
+    public void setCompetences(List<Competence> competences) {
         this.competences = competences;
     }
 
-    public String getExperiences() {
+    public List<Experience> getExperiences() {
         return experiences;
     }
 
-    public void setExperiences(String experiences) {
+    public void setExperiences(List<Experience> experiences) {
         this.experiences = experiences;
     }
 
-    public String getFormation() {
+    public List<Formation> getFormation() {
         return formation;
     }
 
-    public void setFormation(String formation) {
+    public void setFormation(List<Formation> formation) {
         this.formation = formation;
     }
 
@@ -157,3 +160,4 @@ public class Etudiant {
     public Etudiant() {
     }
 }
+
