@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -76,11 +79,14 @@ public class ServiceEtudiant {
 	}
 	
 	// Service pour récupérer tous les étudiants
-	public List<Etudiant> getAllEtudiants(){
-		return daoEtudiant.findAll();
-		//Pageable pageable = PageRequest.of(0, 10);
-		//Page<Student> studentPage = studentRepository.findAll(pageable);
-		// return studentPage;
+	public ResponseEntity<Page<Etudiant>> getPaginatedEtudiants(int page, int size){
+		//return daoEtudiant.findAll();
+		// Instanciation d'un pageable pour la pagination
+		Pageable pageable = PageRequest.of(page,size);
+		
+		// Recupérer les étudiants en utilisant un pageable
+		Page<Etudiant> studentPage = daoEtudiant.findAll(pageable);
+		return ResponseEntity.ok(studentPage);
 	}
 	
 	

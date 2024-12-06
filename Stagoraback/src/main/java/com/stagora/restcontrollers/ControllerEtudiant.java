@@ -4,6 +4,7 @@ package com.stagora.restcontrollers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,9 +51,11 @@ public class ControllerEtudiant {
 	
 	// Methode pour récupérer tous les profils étudiants
 	@GetMapping(value="/listing")
-	public List<Etudiant> getAllEtudiants() {
+	public ResponseEntity<Page<Etudiant>> getPaginatedEtudiants(
+			@RequestParam(value = "page", defaultValue = "0") int page,
+			@RequestParam(value = "size", defaultValue = "10") int size) {
 		
-		return serviceEtudiant.getAllEtudiants();
+		return serviceEtudiant.getPaginatedEtudiants(page,size);
 	}
 	
 	
