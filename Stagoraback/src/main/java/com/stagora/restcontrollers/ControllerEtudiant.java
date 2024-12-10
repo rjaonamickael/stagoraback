@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stagora.dto.DtoCandidature;
+import com.stagora.dto.EtudiantDTO;
 import com.stagora.entities.employers.Stage;
 import com.stagora.entities.students.Etudiant;
 import com.stagora.services.ServiceEtudiant;
@@ -54,10 +55,10 @@ public class ControllerEtudiant {
 	
 	// Récupérer le profil étudiant via l'id utilisateur
     @GetMapping("/user/{id_user}")
-    public ResponseEntity<Etudiant> getProfilByUserId(@PathVariable Long id_user) {
+    public ResponseEntity<EtudiantDTO> getProfilByUserId(@PathVariable Long id_user) {
         try {
             Etudiant etudiant = serviceEtudiant.getProfilByUserId(id_user);
-            return ResponseEntity.ok(etudiant);
+            return ResponseEntity.ok(EtudiantDTO.fromEntity(etudiant));
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
