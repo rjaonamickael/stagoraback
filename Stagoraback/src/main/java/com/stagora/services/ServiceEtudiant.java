@@ -1,6 +1,7 @@
 package com.stagora.services;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -15,11 +16,13 @@ import org.springframework.stereotype.Service;
 import com.stagora.dao.employers.DaoStage;
 import com.stagora.dao.students.DaoCandidature;
 import com.stagora.dao.students.DaoEtudiant;
+import com.stagora.dao.users.DaoUser;
 import com.stagora.dto.DtoCandidature;
 import com.stagora.entities.employers.Stage;
 import com.stagora.entities.students.Candidature;
 import com.stagora.entities.students.Etablissement;
 import com.stagora.entities.students.Etudiant;
+import com.stagora.entities.users.User;
 import com.stagora.utils.employeur.ModaliteStage;
 import com.stagora.utils.etudiant.EtatCandidature;
 import com.stagora.utils.etudiant.SpecificationRechercheStage;
@@ -35,6 +38,9 @@ public class ServiceEtudiant {
 	
 	@Autowired
 	private DaoCandidature daoCandidature;
+	
+	@Autowired
+    private DaoUser daoUser;
 	
 	
 	public ResponseEntity<DtoCandidature> addCandidature(DtoCandidature dtoCandidature) {
@@ -77,6 +83,42 @@ public class ServiceEtudiant {
 		return ResponseEntity.status(HttpStatus.OK).body(stages);
 	
 	}
+	
+	// Récupérer le profil étudiant via l'id utilisateur
+    public Etudiant getProfilByUserId(Long id_user) {
+        User user = daoUser.findById(id_user)
+                .orElseThrow(() -> new NoSuchElementException("Utilisateur non trouvé"));
+
+        Etudiant etudiant = user.getEtudiant();
+        if (etudiant == null) {
+            throw new NoSuchElementException("Étudiant non trouvé pour cet utilisateur");
+        }
+
+        return etudiant;
+    }
+    
+    // Mettre à jour le profil étudiant via l'id utilisateur
+    public Etudiant updateProfilByUserId(Long id_user, Etudiant etudiantModif) {
+        User user = daoUser.findById(id_user)
+                .orElseThrow(() -> new NoSuchElementException("Utilisateur non trouvé"));
+
+        Etudiant etudiant = user.getEtudiant();
+        if (etudiant == null) {
+            throw new NoSuchElementException("Étudiant non trouvé pour cet utilisateur");
+        }
+
+        etudiant.setNom(etudiantModif.getNom());
+        etudiant.setPrenom(etudiantModif.getPrenom());
+        etudiant.setApropos(etudiantModif.getApropos());
+        etudiant.setAdresse(etudiantModif.getAdresse());
+        etudiant.setCompetences(etudiantModif.getCompetences());
+        etudiant.setExperiences(etudiantModif.getExperiences());
+        etudiant.setFormation(etudiantModif.getFormation());
+
+        daoEtudiant.save(etudiant);
+
+        return etudiant;
+    }
 	
 	// Service pour récupérer tous les étudiants
 	public ResponseEntity<Page<Etudiant>> getPaginatedEtudiants(int page, int size){
