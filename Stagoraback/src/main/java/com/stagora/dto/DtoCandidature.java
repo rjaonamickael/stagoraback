@@ -90,15 +90,27 @@ public class DtoCandidature {
 	
 	
 	public static DtoCandidature toDTOCandidature(Candidature c) {
-		DtoCandidature dto = new DtoCandidature();
-		dto.setId(c.getId());
-		dto.setDate_candidature(c.getDate_candidature());
-		dto.setEtatCandidature(c.getEtatCandidature());
-		dto.setCv(c.getCv());
-		dto.setLettreMotivation(c.getLettreMotivation());
-		dto.setId_etudiant(c.getEtudiant().getId());
-		dto.setId_stage(c.getStage().getId());
-		return dto;
+	    DtoCandidature dto = new DtoCandidature();
+	    dto.setId(c.getId());
+	    dto.setDate_candidature(c.getDate_candidature());
+	    dto.setEtatCandidature(c.getEtatCandidature());
+	    dto.setCv(c.getCv());
+	    dto.setLettreMotivation(c.getLettreMotivation());
+
+	    if (c.getEtudiant() != null) {
+	        dto.setId_etudiant(c.getEtudiant().getId());
+	    } else {
+	        System.err.println("L'étudiant associé à cette candidature est null.");
+	    }
+
+	    if (c.getStage() != null) {
+	        dto.setId_stage(c.getStage().getId());
+	    } else {
+	        System.err.println("Le stage associé à cette candidature est null.");
+	    }
+
+	    return dto;
 	}
+
 	
 }

@@ -1,4 +1,5 @@
 package com.stagora.services;
+import com.stagora.utils.etudiant.EtatCandidature;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,8 @@ import com.stagora.entities.users.User;
 import com.stagora.utils.FonctionsUtiles;
 import com.stagora.utils.exceptions.EmailNonDisponibleException;
 import com.stagora.utils.user.RequestInscriptionEmployeur;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class ServiceEmployeur {
@@ -50,7 +53,10 @@ public class ServiceEmployeur {
 	private FonctionsUtiles fonctions;
 	
 	private final String TYPE_MESSAGE="message";
-	
+	@Autowired
+	private ServiceMailing serviceMailing;
+
+	private static final Logger log = LoggerFactory.getLogger(ServiceEmployeur.class);
 	
 	public ResponseEntity<Map<String, String>> ajoutStage(Long id_employeur,Stage stage){
 		// Recherche de l'employeur
@@ -233,6 +239,49 @@ public class ServiceEmployeur {
         }
     }
 
+	
+	
+	
+	public ResponseEntity<Map<String, String>> updateEtatCandidature(Long id_candidature, String etat) {
+	    // Vérifiez si l'état est valide
+	    EtatCandidature etatCandidature;
+	    try {
+	        etatCandidature = EtatCandidature.valueOf(etat.toUpperCase());
+	    } catch (IllegalArgumentException e) {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+	                .body(Map.of("message", "État non valide. Utilisez EN_ATTENTE, REFUSE, ACCEPTE ou INTERRESSE."));
+	    }
+
+	    // Recherchez la candidature
+	    Candidature candidature = daoCandidature.findById(id_candidature)
+	            .orElseThrow(() -> new NoSuchElementException("Candidature non trouvée"));
+
+	    // Mettez à jour l'état
+	    candidature.setEtatCandidature(etatCandidature);
+	    daoCandidature.save(candidature);
+
+	    // Préparez et envoyez l'e-mail uniquement pour REFUSE ou ACCEPTE
+	    if (etatCandidature == EtatCandidature.ACCEPTE || etatCandidature == EtatCandidature.REFUSE) {
+	        String emailEtudiant = candidature.getEtudiant().getUser().getEmail();
+	        String subject = "Mise à jour de votre candidature";
+	        String contenu = (etatCandidature == EtatCandidature.ACCEPTE)
+	                ? String.format("Votre candidature pour le stage '%s' a été ACCEPTÉE. Félicitations !",
+	                candidature.getStage().getIntitule())
+	                : String.format("Votre candidature pour le stage '%s' a été REFUSÉE. Bonne chance pour la suite.",
+	                candidature.getStage().getIntitule());
+
+	        try {
+	            serviceMailing.sendCustomEmail(emailEtudiant, subject, contenu);
+	            log.info("E-mail envoyé avec succès à {}", emailEtudiant);
+	        } catch (Exception e) {
+	            log.error("Erreur lors de l'envoi de l'e-mail à {} : {}", emailEtudiant, e.getMessage());
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                    .body(Map.of("message", "Erreur lors de l'envoi de la notification par e-mail"));
+	        }
+	    }
+
+	    return ResponseEntity.ok(Map.of("message", "Candidature mise à jour avec succès"));
+	}
     
 	// Methode reponse
 	private Map<String, String> reponse(String message) {
@@ -240,4 +289,8 @@ public class ServiceEmployeur {
         reponse.put("message", message);
         return reponse;
     }
+	
+	
+
+
 }

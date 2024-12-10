@@ -19,6 +19,7 @@ import com.stagora.entities.students.Etudiant;
 import com.stagora.utils.employeur.ModaliteStage;
 import com.stagora.utils.etudiant.EtatCandidature;
 import com.stagora.utils.etudiant.SpecificationRechercheStage;
+import java.util.NoSuchElementException;
 
 @Service
 public class ServiceEtudiant {
@@ -34,31 +35,45 @@ public class ServiceEtudiant {
 	
 	
 	public ResponseEntity<DtoCandidature> addCandidature(DtoCandidature dtoCandidature) {
-		
-		// Creation de la candidature
-		Candidature candidature = new Candidature();
-		
-		
-		
-		candidature.setDate_candidature(dtoCandidature.getDate_candidature());
-		
-		candidature.setCv(dtoCandidature.getCv());
-		
-		candidature.setLettreMotivation(dtoCandidature.getLettreMotivation());
-		
-		candidature.setEtudiant(daoEtudiant.findById(dtoCandidature.getId_etudiant()).get());
-		
-		candidature.setStage(daoStage.findById(dtoCandidature.getId_stage()).get());
-		
-		
-		daoCandidature.save(candidature);	
-		
-		
-		
-		
-		return ResponseEntity.status(HttpStatus.CREATED).body(DtoCandidature.toDTOCandidature(candidature));
+	    try {
+	        System.out.println("Données reçues pour la candidature : " + dtoCandidature);
+
+	        // Récupération de l'étudiant
+	        Etudiant etudiant = daoEtudiant.findById(dtoCandidature.getId_etudiant())
+	                .orElseThrow(() -> new RuntimeException("Étudiant introuvable avec l'ID : " + dtoCandidature.getId_etudiant()));
+	        System.out.println("Étudiant trouvé : " + etudiant);
+
+	        // Récupération du stage
+	        Stage stage = daoStage.findById(dtoCandidature.getId_stage())
+	                .orElseThrow(() -> new RuntimeException("Stage introuvable avec l'ID : " + dtoCandidature.getId_stage()));
+	        System.out.println("Stage trouvé : " + stage);
+
+	        // Création de la candidature
+	        Candidature candidature = new Candidature();
+	        candidature.setDate_candidature(dtoCandidature.getDate_candidature());
+	        candidature.setCv(dtoCandidature.getCv());
+	        candidature.setLettreMotivation(dtoCandidature.getLettreMotivation());
+	        candidature.setEtudiant(etudiant);
+	        candidature.setStage(stage);
+
+	        // Sauvegarde de la candidature
+	        daoCandidature.save(candidature);
+
+	        return ResponseEntity.status(HttpStatus.CREATED).body(DtoCandidature.toDTOCandidature(candidature));
+	    } catch (RuntimeException e) {
+	        System.err.println("Erreur lors de l'ajout de la candidature : " + e.getMessage());
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+	    } catch (Exception e) {
+	        System.err.println("Erreur inattendue lors de l'ajout de la candidature : " + e.getMessage());
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+	    }
 	}
-	
+
+
+
+
+
 	
 	public ResponseEntity<List<Stage> > getStagesFiltre(String intitule, String categorie, 
 														ModaliteStage modalite, String adresse) {
