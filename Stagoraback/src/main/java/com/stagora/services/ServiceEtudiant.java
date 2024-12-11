@@ -18,6 +18,7 @@ import com.stagora.dao.students.DaoCandidature;
 import com.stagora.dao.students.DaoEtudiant;
 import com.stagora.dao.users.DaoUser;
 import com.stagora.dto.DtoCandidature;
+import com.stagora.dto.EtudiantDTO;
 import com.stagora.entities.employers.Stage;
 import com.stagora.entities.students.Candidature;
 import com.stagora.entities.students.Etablissement;
@@ -121,14 +122,19 @@ public class ServiceEtudiant {
     }
 	
 	// Service pour récupérer tous les étudiants
-	public ResponseEntity<Page<Etudiant>> getPaginatedEtudiants(int page, int size){
+	public ResponseEntity<Page<EtudiantDTO>> getPaginatedEtudiants(int page, int size){
 		//return daoEtudiant.findAll();
 		// Instanciation d'un pageable pour la pagination
 		Pageable pageable = PageRequest.of(page,size);
 		
-		// Recupérer les étudiants en utilisant un pageable
-		Page<Etudiant> studentPage = daoEtudiant.findAll(pageable);
-		return ResponseEntity.ok(studentPage);
+		// Récupération des étudiants sous forme de Page<Etudiant>
+	    Page<Etudiant> studentPage = daoEtudiant.findAll(pageable);
+	    
+	    // Conversion de la Page<Etudiant> en Page<EtudiantDTO>
+	    Page<EtudiantDTO> studentDTOPage = studentPage.map(EtudiantDTO::fromEntity);
+	    
+	    // Retourner la Page<EtudiantDTO>
+		return ResponseEntity.ok(studentDTOPage);
 	}
 	
 	

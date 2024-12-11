@@ -78,7 +78,7 @@ public class ControllerEtudiant {
 	
 	// Methode pour récupérer tous les profils étudiants
 	@GetMapping(value="/listing")
-	public ResponseEntity<Page<Etudiant>> getPaginatedEtudiants(
+	public ResponseEntity<Page<EtudiantDTO>> getPaginatedEtudiants(
 			@RequestParam(value = "page", defaultValue = "0") int page,
 			@RequestParam(value = "size", defaultValue = "10") int size) {
 		
