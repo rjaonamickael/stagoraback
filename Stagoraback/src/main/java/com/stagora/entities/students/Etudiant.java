@@ -29,6 +29,20 @@ public class Etudiant {
 	@Column(columnDefinition = "TEXT")
 	private String apropos;
 	
+	private String adresse;
+	
+    @OneToMany(mappedBy = "etudiant", cascade = CascadeType.ALL)
+    @JsonManagedReference	// Pour éviter les boucles infini JSON à cause des relations oneToMany
+    private List<Competence> competences;
+
+    @OneToMany(mappedBy = "etudiant", cascade = CascadeType.ALL)
+    @JsonManagedReference	// Pour éviter les boucles infini JSON à cause des relations oneToMany
+    private List<Experience> experiences;
+
+    @OneToMany(mappedBy = "etudiant", cascade = CascadeType.ALL)
+    @JsonManagedReference	// Pour éviter les boucles infini JSON à cause des relations oneToMany
+    private List<Formation> formation;
+
 	
 	@OneToOne
     @JoinColumn(name = "id_user", referencedColumnName = "id")
@@ -92,14 +106,42 @@ public class Etudiant {
 	public void setApropos(String apropos) {
 		this.apropos = apropos;
 	}
+	
+	public String getAdresse() {
+        return adresse;
+    }
 
+    public void setAdresse(String adresse) {
+        this.adresse = adresse;
+    }
 
+    public List<Competence> getCompetences() {
+        return competences;
+    }
+
+    public void setCompetences(List<Competence> competences) {
+        this.competences = competences;
+    }
+
+    public List<Experience> getExperiences() {
+        return experiences;
+    }
+
+    public void setExperiences(List<Experience> experiences) {
+        this.experiences = experiences;
+    }
+
+    public List<Formation> getFormation() {
+        return formation;
+    }
+
+    public void setFormation(List<Formation> formation) {
+        this.formation = formation;
+    }
 
 	public User getUser() {
 		return user;
 	}
-
-
 
 	public void setUser(User user) {
 		this.user = user;

@@ -51,51 +51,45 @@ public class ServiceAdmin {
 	
 	
 	public ResponseEntity<Etablissement> ajoutEtablissement(
-												String nom, String ville, String province, 
-												MultipartFile logo) throws Exception {
-	    
-		Etablissement etablissement = new Etablissement();
+	        String nom, String ville, String province, MultipartFile logo) throws Exception {
+
+	    Etablissement etablissement = new Etablissement();
 	    etablissement.setNom(nom);
 	    etablissement.setVille(ville);
 	    etablissement.setProvince(province);
 
 	    if (logo != null && !logo.isEmpty()) {
-		    // Extraire l'extension du fichier
-		    String originalFileName = logo.getOriginalFilename();
-		    String extension = "";
-		    
-		    // Vérifie si le fichier a une extension
-		    int dotIndex = originalFileName.lastIndexOf('.');
-		    if (dotIndex > 0) {
-		        extension = originalFileName.substring(dotIndex);
-		    }
+	        // Extraire l'extension du fichier
+	        String originalFileName = logo.getOriginalFilename();
+	        String extension = "";
 
-		    // Crée un nouveau nom unique (par exemple, en utilisant le temps actuel)
-		    String newFileName = "logo " + nom + extension;
-		    
-		    // Définir le chemin complet du fichier
-		    Path filePath = Paths.get(UPLOAD_DIR, newFileName);
+	        int dotIndex = originalFileName.lastIndexOf('.');
+	        if (dotIndex > 0) {
+	            extension = originalFileName.substring(dotIndex);
+	        }
 
-	        // Crée le répertoire si inexistant
-	        Files.createDirectories(Paths.get(UPLOAD_DIR));
+	        // Créer un nom de fichier unique
+	        String newFileName = "logo_" + System.currentTimeMillis() + extension;
 
-	        // Sauvegarde le fichier
+	        // Enregistrer le fichier
+	        Path filePath = Paths.get(UPLOAD_DIR, newFileName);
+	        Files.createDirectories(Paths.get(UPLOAD_DIR)); // Créer le répertoire si inexistant
 	        Files.copy(logo.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-	        
+
 	        System.out.println("Logo établissement enregistré à : " + filePath.toString());
-	        
-	        etablissement.setLogo(filePath.toString());
-	        
+
+	        // Retourner l'URL publique
+	        etablissement.setLogo("/images/etablissement/" + newFileName);
 	    } else {
-	        // Optionnel : valeur par défaut si aucun fichier n'est téléchargé
-	        etablissement.setLogo(null); // ou une image par défaut
+	        etablissement.setLogo(null); // Pas de logo
 	    }
 
-		// Enregistrement de l'etablissement
-		daoEtablissement.save(etablissement);
-		
-		return ResponseEntity.status(HttpStatus.CREATED).body(etablissement);
+	    // Enregistrement dans la base de données
+	    daoEtablissement.save(etablissement);
+
+	    return ResponseEntity.status(HttpStatus.CREATED).body(etablissement);
 	}
+
 	
 	
 	public ResponseEntity<Map<String, String>> suppressionEtablissement(Long id){

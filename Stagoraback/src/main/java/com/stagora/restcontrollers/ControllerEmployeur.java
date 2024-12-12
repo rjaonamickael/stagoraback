@@ -124,6 +124,15 @@ public class ControllerEmployeur {
 		
 		return serviceEmployeur.getAllCandidatureStageByPage(id_stage, page, size);
 	}
+    @PutMapping("/candidatures/{id_candidature}/etat")
+    public ResponseEntity<Map<String, String>> updateEtatCandidature(
+            @PathVariable Long id_employeur,
+            @PathVariable Long id_candidature,
+            @RequestParam("etat") String etat) {
+
+        return serviceEmployeur.updateEtatCandidature(id_candidature, etat);
+    }
+
     
 
 }
