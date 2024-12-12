@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.stagora.dao.students.DaoEtudiant; // Importer DaoEtudiant
 import com.stagora.dto.DtoCandidature;
+import com.stagora.dto.EtudiantDTO;
 import com.stagora.entities.employers.Stage;
 import com.stagora.entities.students.Etudiant;
 import com.stagora.services.ServiceEtudiant;
