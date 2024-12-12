@@ -58,17 +58,27 @@ public class ControllerAdmin {
             @RequestParam String province,
             @RequestParam(required = false) MultipartFile logo) {
         
-    	try {
-			
-    		return serviceAdmin.ajoutEtablissement(nom, ville, province, logo);
-    		
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-			
-		}
+        try {
+            // Loguer les données reçues
+            System.out.println("Nom : " + nom);
+            System.out.println("Ville : " + ville);
+            System.out.println("Province : " + province);
+            if (logo != null) {
+                System.out.println("Nom du fichier : " + logo.getOriginalFilename());
+                System.out.println("Type du fichier : " + logo.getContentType());
+                System.out.println("Taille du fichier (en octets) : " + logo.getSize());
+            } else {
+                System.out.println("Aucun fichier reçu pour le logo.");
+            }
 
+            return serviceAdmin.ajoutEtablissement(nom, ville, province, logo);
+            
+        } catch (Exception e) {
+            e.printStackTrace(); // Affiche l'erreur complète
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
+
 
     // Delete an establishment by ID
     @DeleteMapping("/etablissements/{id}")
@@ -103,8 +113,8 @@ public class ControllerAdmin {
 
         if (logo != null && !logo.isEmpty()) {
             try {
-                String logoFilename = saveLogo(logo); // Méthode pour sauvegarder le logo
-                etablissement.setLogo(logoFilename);
+                String savedLogoFilename = saveLogo(logo);
+                etablissement.setLogo("/images/etablissement/" + savedLogoFilename);
             } catch (IOException e) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Logo upload failed");
             }
@@ -114,22 +124,31 @@ public class ControllerAdmin {
     }
 
 
+
  // Méthode privée pour sauvegarder le fichier de logo
     private String saveLogo(MultipartFile logo) throws IOException {
-        String directoryPath = "D:/session5/projet/stagorafront/src/files/images";
+        String directoryPath = "D:/session5/projet/stagorafront/src/files/images/etablissement";
         File directory = new File(directoryPath);
 
         if (!directory.exists()) {
-            directory.mkdirs();
+            boolean created = directory.mkdirs();
+            System.out.println("Répertoire créé : " + created);
         }
 
         String filename = System.currentTimeMillis() + "_" + logo.getOriginalFilename();
         File fileToSave = new File(directory, filename);
-        logo.transferTo(fileToSave);
 
-        System.out.println("File saved to backend directory: " + filename);  // Log the saved filename
+        // Loguer les informations avant la sauvegarde
+        System.out.println("Chemin du fichier à sauvegarder : " + fileToSave.getAbsolutePath());
+        
+        logo.transferTo(fileToSave); // Sauvegarde le fichier
+        
+        System.out.println("Fichier sauvegardé avec succès !");
         return filename;
     }
+
+
+
 
 
     // Validate file type and size
