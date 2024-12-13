@@ -26,6 +26,7 @@ import com.stagora.entities.students.Etudiant;
 import com.stagora.entities.users.User;
 import com.stagora.utils.employeur.ModaliteStage;
 import com.stagora.utils.etudiant.EtatCandidature;
+import com.stagora.utils.etudiant.SpecificationRechercheEtudiant;
 import com.stagora.utils.etudiant.SpecificationRechercheStage;
 import java.util.NoSuchElementException;
 
@@ -80,8 +81,15 @@ public class ServiceEtudiant {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 	    }
 	}
-
-
+	
+	
+	public ResponseEntity<List<Etudiant>> getEtudiantsFiltre(String nom, String competence, String formation, String experience) {
+	    Specification<Etudiant> spec = SpecificationRechercheEtudiant.filtre(nom, competence, formation, experience);
+	    
+	    List<Etudiant> etudiants = daoEtudiant.findAll(spec);
+	    
+	    return ResponseEntity.status(HttpStatus.OK).body(etudiants);
+	}
 
 
 
