@@ -52,6 +52,16 @@ public class ControllerEtudiant {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur : " + e.getMessage());
         }
     }
+    
+	@GetMapping(value = "/recherche/etudiant")
+	public ResponseEntity<List<Etudiant>> rechercheEtudiant(
+	    @RequestParam(required = false) String nom, 
+	    @RequestParam(required = false) String competence, 
+	    @RequestParam(required = false) String formation,
+	    @RequestParam(required = false) String experience
+	) {
+	    return serviceEtudiant.getEtudiantsFiltre(nom, competence, formation, experience);
+	}
 
     @GetMapping(value = "/recherche")
     public ResponseEntity<List<Stage>> rechercheStage(
